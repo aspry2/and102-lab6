@@ -2,7 +2,9 @@ package com.codepath.articlesearch
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.codepath.articlesearch.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.serialization.json.Json
 
 fun createJson() = Json {
@@ -10,8 +12,6 @@ fun createJson() = Json {
     ignoreUnknownKeys = true
     useAlternativeNames = false
 }
-
-private const val TAG = "MainActivity/"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,6 +21,28 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.article_frame_layout, articleListFragment)
         fragmentTransaction.commit()
+
+
+        // Define fragments
+        val bookFragment: Fragment = BestSellerBooksFragment()
+        val articleFragment: Fragment = ArticleListFragment()
+
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_nav)
+
+        // Handle navigation selection
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            lateinit var fragment: Fragment
+            when (item.itemId) {
+                R.id.nav_books -> fragment = bookFragment
+                R.id.nav_articles -> fragment = articleFragment
+            }
+            fragmentManager.beginTransaction().replace(R.id.article_frame_layout, fragment).commit()
+            true
+        }
+
+        // Set default selection
+        bottomNavigationView.selectedItemId = R.id.nav_books
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
