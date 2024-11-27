@@ -24,9 +24,31 @@ class ArticleListFragment : Fragment() {
     private lateinit var articlesRecyclerView: RecyclerView
     private lateinit var articleAdapter: ArticleAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        // Store the view in a variable instead of a return statement
+        val view = inflater.inflate(R.layout.fragment_article_list, container, false)
+
+        // Configurations for the recyclerView and to configure the adapter
+        val layoutManager = LinearLayoutManager(context)
+        articlesRecyclerView = view.findViewById(R.id.article_recycler_view)
+        articlesRecyclerView.layoutManager = layoutManager
+        articlesRecyclerView.setHasFixedSize(true)
+        articleAdapter = ArticleAdapter(view.context, articles)
+        articlesRecyclerView.adapter = articleAdapter
+
+        // Return the inflated view
+        return view
+    }
+
     private fun fetchArticles() {
         val client = AsyncHttpClient()
-        client.get(ARTICLE_SEARCH_URL, object:JsonHttpResponseHandler() {
+        client.get(ARTICLE_SEARCH_URL, object : JsonHttpResponseHandler() {
             override fun onFailure(
                 statusCode: Int,
                 headers: Headers?,
@@ -52,29 +74,6 @@ class ArticleListFragment : Fragment() {
                 }
             }
         })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Store the view in a variable
-        val view  = inflater.inflate(R.layout.fragment_article_list, container, false)
-
-        // Configurations for the recycleView and adapter
-        val layoutManager = LinearLayoutManager(context)
-        articlesRecyclerView = view.findViewById(R.id.article_recycler_view)
-        articlesRecyclerView.layoutManager = layoutManager
-        articlesRecyclerView.setHasFixedSize(true)
-        articleAdapter = ArticleAdapter(view.context, articles)
-        articlesRecyclerView.adapter = articleAdapter
-
-        // Return inflated view
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
